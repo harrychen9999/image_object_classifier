@@ -1,20 +1,31 @@
 CC=g++
-#CFLAGS+=-g
+CFLAGS+=-g
 CFLAGS+=`pkg-config --cflags opencv`
 LDFLAGS+=`pkg-config --libs opencv`
+
+TARGETS = test_train sift train
 
 
 .PHONY: all clean
 
-main: main.o
-	$(CC) -o main main.o $(LDFLAGS)
 
+sift: sift.o
+	$(CC) -o sift sift.o $(LDFLAGS)
 
-main.o: src/main.cpp
+sift.o: src/sift.cpp
 	$(CC) -c $(CFLAGS) $<
 
+train: train.o
+	$(CC) -o train train.o $(LDFLAGS)
 
-all: $(PROG)
+train.o: src/train.cpp
+	$(CC) -c $(CFLAGS) $<
+
+test_train: test_train.o train.o
+	$(CC) -o test_train test_train.o train.o $(LDFLAGS)
+
+test_train.o: src/test_train.cpp
+	$(CC) -c $(CFLAGS) $<
 
 clean:
-	rm -f main main.o
+	rm -f *.o $(TARGETS)
